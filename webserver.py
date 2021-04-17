@@ -1,6 +1,7 @@
 from flask import Flask
 import pigpio
 import time
+import math
 
 app = Flask(__name__)
 pi = pigpio.pi()
@@ -18,6 +19,24 @@ def off():
     pi.set_PWM_dutycycle(22, 0)
     pi.set_PWM_dutycycle(24, 0)
     return 'Off!'
+
+@app.route('/color:<red>/<green>/<blue>')
+def color(red, green, blue):
+    on = 0
+    red = int(red)
+    green = int(green)
+    blue = int(blue)
+    if red > 255:
+        red = 255
+    if green > 255:
+        green = 255
+    if blue > 255:
+        blue = 255
+    pi.set_PWM_dutycycle(17, red)
+    pi.set_PWM_dutycycle(22, green)
+    pi.set_PWM_dutycycle(24, blue)
+    return 'Color!'
+
 
 @app.route('/rainbow')
 def rainbow():
